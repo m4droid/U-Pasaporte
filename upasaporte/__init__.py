@@ -8,16 +8,13 @@ from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA 
 from Crypto.Signature import PKCS1_v1_5 
 from Crypto.Util.asn1 import DerSequence
-import requests
 
 
 DEFAULT_CERTIFICATE_URL = 'https://www.u-cursos.cl/upasaporte/certificado'
 
 
-def verify_data_integrity(signature, request_body, certificate_url=DEFAULT_CERTIFICATE_URL):
-    public_key_request = requests.get(certificate_url)
-    public_key = public_key_request.content
-    rsa_key = __pem_certificate_string_to_der_key(public_key)
+def verify_data_integrity(signature, request_body, public_key_string):
+    rsa_key = __pem_certificate_string_to_der_key(public_key_string)
     signer = PKCS1_v1_5.new(rsa_key)
     digest = SHA.new()
     digest.update(__request_post_dict_reduce(request_body))
